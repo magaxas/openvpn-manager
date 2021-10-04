@@ -50,11 +50,11 @@ static int get_clients(struct ubus_context *ctx, struct ubus_object *obj,
         struct json_object *jobj;
         for (int i = 0; i < conf.connected_clients_amount; i++) {
             jobj = json_object_new_object();
-            json_object_object_add(jobj, "name", json_object_new_string(clients->name));
-            json_object_object_add(jobj, "address", json_object_new_string(clients->addr));
-            json_object_object_add(jobj, "bytes_recieved", json_object_new_string(clients->bytes_recv));
-            json_object_object_add(jobj, "bytes_sent", json_object_new_string(clients->bytes_sent));
-            json_object_object_add(jobj, "connected_since", json_object_new_string(clients->connected_since));
+            json_object_object_add(jobj, "name", json_object_new_string(clients[i].name));
+            json_object_object_add(jobj, "address", json_object_new_string(clients[i].addr));
+            json_object_object_add(jobj, "bytes_recieved", json_object_new_string(clients[i].bytes_recv));
+            json_object_object_add(jobj, "bytes_sent", json_object_new_string(clients[i].bytes_sent));
+            json_object_object_add(jobj, "connected_since", json_object_new_string(clients[i].connected_since));
         }
         blobmsg_add_object(&b, jobj);
         json_object_put(jobj);
