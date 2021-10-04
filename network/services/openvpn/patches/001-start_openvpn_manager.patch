@@ -1,0 +1,17 @@
+--- a/files/openvpn.init
++++ b/files/openvpn.init
+@@ -324,6 +324,14 @@ start_instance() {
+ 		append UCI_STARTED "$config" "$LIST_SEP"
+ 		echo -e "\nstatus /var/openvpn-status_$s.log" >>"$OPENVPN_CONFIG"
+ 		openvpn_add_instance "$s" "${config%/*}" "$config"
++
++		local name=$s
++		local ip=$(echo $config | grep management | awk '{print $2}')
++		local port=$(echo $config | grep management | awk '{print $3}')
++
++		procd_open_instance
++		procd_set_param command /usr/bin/openvpn-manager $name $ip $port
++		procd_close_instance
+ 		return
+ 	fi
+ 
