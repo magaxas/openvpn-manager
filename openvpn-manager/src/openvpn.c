@@ -132,15 +132,6 @@ char *get_clients_str()
     return clients;
 }
 
-static int set_client_attr(char *attr, char *val)
-{
-    attr = (char*) calloc(CHUNK_SIZE, sizeof(char));
-    if (attr == NULL) return -1;
-
-    strcpy(attr, val);
-    return 0;
-}
-
 client *get_clients_obj()
 {
     char *cstr = get_clients_str();
@@ -155,24 +146,27 @@ client *get_clients_obj()
     while((linetok = strtok_r(cstr, "\n", &cstr))) {
         int j = 0;
         char *ptr = strtok(linetok, ",");
+        clients[i].name = (char*) calloc(strlen(ptr)+1, 1);
+        strcpy(clients[i].name, ptr);
 
         while((ptr = strtok(NULL, ","))) {
             switch (j)
             {
             case 0:
-                set_client_attr(clients[i].name, ptr);
+                clients[i].addr = (char*) calloc(strlen(ptr)+1, 1);
+                strcpy(clients[i].addr, ptr);
                 break;
             case 1:
-                set_client_attr(clients[i].addr, ptr);
+                clients[i].bytes_recv = (char*) calloc(strlen(ptr)+1, 1);
+                strcpy(clients[i].bytes_recv, ptr);
                 break;
             case 2:
-                set_client_attr(clients[i].bytes_recv, ptr);
+                clients[i].bytes_sent = (char*) calloc(strlen(ptr)+1, 1);
+                strcpy(clients[i].bytes_sent, ptr);
                 break;
             case 3:
-                set_client_attr(clients[i].bytes_sent, ptr);
-                break;
-            case 4:
-                set_client_attr(clients[i].connected_since, ptr);
+                clients[i].connected_since = (char*) calloc(strlen(ptr)+1, 1);
+                strcpy(clients[i].connected_since, ptr);
                 break;
             default:
                 break;

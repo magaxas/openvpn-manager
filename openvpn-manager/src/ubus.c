@@ -43,27 +43,27 @@ static int get_clients(struct ubus_context *ctx, struct ubus_object *obj,
     void *tb;
     struct blob_buf b = {};
     blob_buf_init(&b, 0);
-    tb = blobmsg_open_array(&b, "clients");
-
+    tb = blobmsg_open_nested(&b, "clients", true);
     client *clients = get_clients_obj();
+
     if (conf.connected_clients_amount > 0) {
-        struct json_object *jobj;
         for (int i = 0; i < conf.connected_clients_amount; i++) {
+            struct json_object *jobj;
             jobj = json_object_new_object();
             json_object_object_add(jobj, "name", json_object_new_string(clients[i].name));
             json_object_object_add(jobj, "address", json_object_new_string(clients[i].addr));
             json_object_object_add(jobj, "bytes_recieved", json_object_new_string(clients[i].bytes_recv));
             json_object_object_add(jobj, "bytes_sent", json_object_new_string(clients[i].bytes_sent));
             json_object_object_add(jobj, "connected_since", json_object_new_string(clients[i].connected_since));
+            blobmsg_add_json_element(&b, "hello", jobj);
+            json_object_put(jobj);
         }
-        blobmsg_add_object(&b, jobj);
-        json_object_put(jobj);
     }
     else {
         blobmsg_add_string(&b, "clients", "No clients found");
     }
 
-    blobmsg_close_array(&b, tb);
+    blobmsg_close_table(&b, tb);
     ubus_send_reply(ctx, req, b.head);
     blob_buf_free(&b);
     FREE(clients);
@@ -78,9 +78,9 @@ static int disconnect_client(struct ubus_context *ctx, struct ubus_object *obj,
 {
     struct blob_attr *tb[__DISCONNECT_MAX];
     struct blob_buf b = {};
-    
+
     blobmsg_parse(disconnect_policy, __DISCONNECT_MAX, tb, blob_data(msg), blob_len(msg));
-    
+
     if (!tb[DISCONNECT_NAME])
         return UBUS_STATUS_INVALID_ARGUMENT;
 
