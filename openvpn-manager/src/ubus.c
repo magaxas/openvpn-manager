@@ -55,7 +55,7 @@ static int get_clients(struct ubus_context *ctx, struct ubus_object *obj,
             json_object_object_add(jobj, "bytes_recieved", json_object_new_string(clients[i].bytes_recv));
             json_object_object_add(jobj, "bytes_sent", json_object_new_string(clients[i].bytes_sent));
             json_object_object_add(jobj, "connected_since", json_object_new_string(clients[i].connected_since));
-            blobmsg_add_json_element(&b, "hello", jobj);
+            blobmsg_add_json_element(&b, "client", jobj);
             json_object_put(jobj);
         }
     }

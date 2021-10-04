@@ -134,6 +134,7 @@ char *get_clients_str()
 
 client *get_clients_obj()
 {
+    conf.connected_clients_amount = 0;
     char *cstr = get_clients_str();
     if (cstr == NULL) return NULL;
 
